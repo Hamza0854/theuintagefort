@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Add your CSS here -->
+    <style>
+        .set-account-active { color: green; font-weight: bold; }
+        .set-account-inactive { color: red; font-weight: bold; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; font-weight: 500; }
+        input, select { width: 100%; padding: 8px; font-size: 14px; }
+        button { padding: 10px 16px; cursor: pointer; }
+        .actions button { margin-right: 6px; }
+        .message { margin-bottom: 16px; font-weight: 500; }
+        .container, .container-1320 { max-width: 900px; margin: auto; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<nav style="display:flex;justify-content:space-between;align-items:center;padding:18px 32px;background:linear-gradient(90deg,#eaf1fb 60%,#d9e7fa 100%);border-radius:0 0 16px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:24px;">
+    <div>
+        <img src="img/image1_edited.avif" alt="Logo" style="height:40px;vertical-align:middle;border-radius:8px;">
+    </div>
+    <div>
+        <a href="products.html" style="margin-right:18px;text-decoration:none;color:#0078d4;font-weight:500;">All Products</a>
+        <a href="category-view.html" style="margin-right:18px;text-decoration:none;color:#0078d4;font-weight:500;">Categories</a>
+        <a href="login.html" id="logoutLink" style="text-decoration:none;color:#d40000;font-weight:500;">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Add User</h2>
+    <div class="message" id="message"></div>
+    <form id="userForm">
+        <input type="hidden" id="userId">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="Username" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" required>
+        </div>
+        <div class="form-group">
+            <label>Role</label>
+            <select id="parentId" required>
+                <option value="">-- Select Role --</option>
+                <option value="USER">User</option>
+                <option value="EMPLOYEE">Employee</option>
+                <option value="ADMIN">Admin</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="activeField" checked> Active
+            </label>
+        </div>
+        <button type="submit">Save User</button>
+        <button type="button" id="cancelEdit" style="display:none;">Cancel</button>
+    </form>
+</div>
+
+<div class="container-1320">
+    <h2>Users Management</h2>
+    <div class="message" id="message"></div>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 18px;">
+        <input type="text" id="userSearch" placeholder="Search User..." style="width: 320px; padding: 10px 12px; border: 1px solid #bfc9d9; border-radius: 6px; font-size: 15px;">
+    </div>
+    <div class="table-responsive">
+        <table id="userTable" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Account</th>
+                    <th class="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const baseUrl = 'https://tvf.12beonline.com';
+const messageDiv = document.getElementById('message');
+const userForm = document.getElementById('userForm');
+const cancelEditBtn = document.getElementById('cancelEdit');
+
+function showMessage(msg, color = 'green') {
+    messageDiv.textContent = msg;
+    messageDiv.style.color = color;
+    setTimeout(() => { messageDiv.textContent = ''; }, 3000);
+}
+
+async function fetchUsers() {
+    try {
+        const res = await fetch(`${baseUrl}/api/users`);
+        const users = await res.json();
+        renderUsers(users);
+    } catch (err) {
+        showMessage('Error fetching users', 'red');
+        console.error(err);
+    }
+}
+
+function renderUsers(users) {
+    const tbody = document.querySelector('#userTable tbody');
+    tbody.innerHTML = '';
+    users.forEach(user => {
+        const tr = document.createElement('tr');
+        const isActive = user.active ? 'Active' : 'Inactive';
+        tr.innerHTML = `
+            <td>${user.username}</td>
+            <td>${user.role}</td>
+            <td><span class="${user.active ? 'set-account-active' : 'set-account-inactive'}">${isActive}</span></td>
+            <td class="actions">
+                <button onclick="deleteUser(${user.id})">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+userForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const username = document.getElementById('Username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const role = document.getElementById('parentId').value;
+    const active = document.getElementById('activeField').checked;
+
+    if (!username || !password || !role) {
+        showMessage('Please fill all required fields.', 'red');
+        return;
+    }
+
+    const userData = {
+        username,
+        password,
+        role,
+        active,
+        companyId: 1
+    };
+
+    try {
+        const res = await fetch(`${baseUrl}/api/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            showMessage(`Error: ${err.message || 'Could not save user.'}`, 'red');
+            return;
+        }
+
+        showMessage('User added successfully.');
+        userForm.reset();
+        cancelEditBtn.style.display = 'none';
+        fetchUsers();
+    } catch (err) {
+        showMessage('Failed to save user.', 'red');
+        console.error(err);
+    }
+});
+
+window.deleteUser = async function (userId) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+    try {
+        const res = await fetch(`${baseUrl}/api/users/${userId}`, { method: 'DELETE' });
+        if (!res.ok) {
+            showMessage('Delete failed.', 'red');
+            return;
+        }
+        showMessage('User deleted.');
+        fetchUsers();
+    } catch (err) {
+        showMessage('Delete error.', 'red');
+        console.error(err);
+    }
+};
+
+cancelEditBtn.onclick = function () {
+    userForm.reset();
+    cancelEditBtn.style.display = 'none';
+};
+
+document.getElementById('userSearch').addEventListener('input', function () {
+    const query = this.value.trim().toLowerCase();
+    const rows = document.querySelectorAll('#userTable tbody tr');
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+});
+
+fetchUsers();
+</script>
+
+</body>
+</html>
