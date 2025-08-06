@@ -201,40 +201,73 @@
 	</div>
 
 	<script>
-		async function fetchUsers() {
-		    try {
-		        const res = await fetch(`${baseUrl}/api/users`);
-		        const users = await res.json();
-		        renderUsers(users);
-		    } catch (error) {
-		        showMessage('Failed to fetch users', 'red');
-		        console.error('Fetch users error:', error);
-		    }
-		}
+const baseUrl = 'https://tvf.12beonline.com';
 
-		function renderUsers(users) {
-		    const tbody = document.querySelector('#usersTable tbody');
-		    tbody.innerHTML = '';
+async function fetchUsers() {
+    const tbody = document.querySelector('#usersTable tbody');
+    tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
 
-		    users.forEach(user => {
-		        const tr = document.createElement('tr');
-		        const isActive = user.active;
+    try {
+        const res = await fetch(`${baseUrl}/api/users`);
+        if (!res.ok) {
+            tbody.innerHTML = `<tr><td colspan="4" style="color:red;">Failed to load users (Status: ${res.status})</td></tr>`;
+            return;
+        }
 
-		        tr.innerHTML = `
-		            <td>${user.username}</td>
-		            <td>${user.role}</td>
-		            <td><span class="${isActive ? 'set-account-active' : 'set-account-inactive'}">${isActive ? 'Active' : 'Inactive'}</span></td>
-		            <td class="actions">
-		                <button onclick="viewUser(${user.id})">View</button>
-		                <button onclick="editUser(${user.id});scrollToForm();">Edit</button>
-		                <button onclick="deleteUser(${user.id})">Delete</button>
-		            </td>
-		        `;
+        const users = await res.json();
 
-		        tbody.appendChild(tr);
-		    });
-		}
-		fetchUsers();
-	</script>
+        if (!Array.isArray(users)) {
+            tbody.innerHTML = '<tr><td colspan="4" style="color:red;">Invalid response format</td></tr>';
+            return;
+        }
+
+        if (users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4">No users found.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = ''; // clear loading message
+
+        users.forEach(user => {
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                <td>${user.username || ''}</td>
+                <td>${user.role || ''}</td>
+                <td>
+                    <span class="${user.active ? 'set-account-active' : 'set-account-inactive'}">
+                        ${user.active ? 'Active' : 'Inactive'}
+                    </span>
+                </td>
+                <td class="actions">
+                    <button onclick="viewUser(${user.id})">View</button>
+                    <button onclick="editUser(${user.id})">Edit</button>
+                    <button onclick="deleteUser(${user.id})">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        tbody.innerHTML = `<tr><td colspan="4" style="color:red;">Error: ${err.message}</td></tr>`;
+    }
+}
+
+// Call the function when the page loads
+window.onload = fetchUsers;
+
+// Dummy button functions for now
+function viewUser(id) {
+    alert('View user ID: ' + id);
+}
+function editUser(id) {
+    alert('Edit user ID: ' + id);
+}
+function deleteUser(id) {
+    alert('Delete user ID: ' + id);
+}
+</script>
+
 </body>
 </html>
