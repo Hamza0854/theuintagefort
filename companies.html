@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Companies</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+		    font-family: "Jost", sans-serif;
+		    background: linear-gradient(120deg, #f0f4f9 0%, #d9e7fa 100%);
+		    min-height: 100vh;
+		    margin: 0;
+		}
+		.container {
+		    max-width: 600px;
+		    margin: 40px auto;
+		    background: #fff;
+		    padding: 40px 32px 32px 32px;
+		    border-radius: 16px;
+		    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+		}
+		.container-1320 {
+			max-width: 1320px;
+			margin: 40px auto;
+		    background: #fff;
+		    padding: 40px 32px 32px 32px;
+		    border-radius: 16px;
+		    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+		}
+		h2 {
+		    text-align: center;
+		    margin-bottom: 24px;
+		    color: #2a3b4c;
+		}
+		label {
+		    display: block;
+		    margin-bottom: 8px;
+		    font-weight: bold;
+		}
+		input, select {
+		    width: 100%;
+		    padding: 10px;
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    font-family: "Jost", sans-serif;
+		}
+		.form-group {
+		    margin-bottom: 16px;
+		}
+		ul {
+		    list-style: none;
+		    padding-left: 0;
+		}
+		li {
+		    margin-bottom: 10px;
+		    background: #f7fafd;
+		    border-radius: 8px;
+		    padding: 10px 16px;
+		    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+		}
+		button {
+		    background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
+		    color: white;
+		    border: none;
+		    padding: 10px 16px;
+		    border-radius: 4px;
+		    cursor: pointer;
+		    margin-right: 8px;
+		    font-family: "Jost", sans-serif;
+		}
+		.table-responsive {
+		    overflow-x: auto;
+		    overflow-y: auto;
+		    max-height: 500px;
+		    border-radius: 12px;
+		    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+		}
+		table {
+		    width: 100%;
+		    min-width: unset;
+		    table-layout: auto;
+		    border-radius: 0;
+		    box-shadow: none;
+		}
+		th {
+		    background: linear-gradient(90deg, #eaf1fb 60%, #d9e7fa 100%);
+		    color: #2a3b4c;
+		    font-weight: 700;
+		    font-size: 16px;
+		}
+		th, td {
+		    border: none;
+		    padding: 12px 8px;
+		    text-align: left;
+		    font-size: 14px;
+		    word-break: break-word;
+		}
+		.actions {
+			text-align: right;
+		}
+		.set-account-active {
+			display: inline-block;
+			padding: 2px 14px;
+			background-color: #c6e5c6;
+			border-radius: 5px;
+			min-width: 75px;
+			border: 1px solid  #5abf5a;
+			font-size: 13px;
+			text-align: center;
+		}
+		.set-account-inactive {
+			display: inline-block;
+			padding: 2px 14px;
+			background-color: #f1cbcb;
+			border-radius: 5px;
+			border: 1px solid #e18888;
+			min-width: 72px;
+			font-size: 13px;
+			text-align: center;
+		}
+		.set-company-scroll {
+			overflow-x: scroll;
+    		min-width: 1995px;
+		}
+
+
+		.modal-backdrop {
+	      display: none;
+	      position: fixed;
+	      inset: 0;
+	      background-color: rgba(0, 0, 0, 0.5);
+	      z-index: 1000;
+	      justify-content: center;
+	      align-items: center;
+	    }
+
+	    .modal-backdrop.show {
+	      display: flex;
+	    }
+
+	    .modal {
+		  background: white;
+		  border-radius: 8px;
+		  width: 100%;
+		  max-width: 528px;
+		  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+		  animation: fadeIn 0.3s ease-in-out;
+		  position: relative;
+		  max-height: 90vh; /* Limit modal height */
+		  display: flex;
+		  flex-direction: column; /* Enables scroll inside body */
+		}
+
+		.modal-body {
+		  flex: 1 1 auto;
+		  overflow-y: auto;
+		  max-height: calc(90vh - 150px); /* Adjust based on header + footer height */
+		  padding: 16px;
+		}
+
+	    @keyframes fadeIn {
+	      from { transform: scale(0.95); opacity: 0; }
+	      to { transform: scale(1); opacity: 1; }
+	    }
+
+	    .modal-header, .modal-body, .modal-footer {
+	      padding: 16px;
+	    }
+
+	    .modal-header {
+	      border-bottom: 1px solid #ddd;
+	      display: flex;
+	      justify-content: space-between;
+	      align-items: center;
+	    }
+
+	    .modal-title {
+	      margin: 0;
+	      font-size: 1.25rem;
+	    }
+
+	    .modal-close {
+	      cursor: pointer;
+	      font-size: 1.2rem;
+	      border: none;
+	      background: none;
+	    }
+
+	    .modal-footer {
+	      border-top: 1px solid #ddd;
+	      text-align: right;
+	    }
+
+	    .btn {
+	      padding: 8px 16px;
+	      border: none;
+	      border-radius: 4px;
+	      cursor: pointer;
+	      margin-left: 8px;
+	    }
+
+	    .btn-primary {
+	      background-color: #007bff;
+	      color: white;
+	    }
+
+	    .btn-secondary {
+	      background-color: #6c757d;
+	      color: white;
+	    }
+	</style>
+</head>
+<body>
+	<!-- ***************************** -->
+    <!-- INNER CONTAINER -->
+    <!-- ***************************** -->
+	<nav style="display:flex;justify-content:space-between;align-items:center;padding:18px 32px;background:linear-gradient(90deg,#eaf1fb 60%,#d9e7fa 100%);border-radius:0 0 16px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:24px;">
+	    <div>
+	        <img src="img/image1_edited.avif" alt="Logo" style="height:40px;vertical-align:middle;border-radius:8px;">
+	    </div>
+	    <div>
+	        <a href="products.html" style="margin-right:18px;text-decoration:none;color:#0078d4;font-weight:500;">All Products</a>
+	        <a href="category-view.html" style="margin-right:18px;text-decoration:none;color:#0078d4;font-weight:500;">Categories</a>
+	        <a href="login.html" id="logoutLink" style="text-decoration:none;color:#d40000;font-weight:500;">Logout</a>
+	    </div>
+    </nav>
+    <!-- ***************************** -->
+    <!-- INNER CONTAINER -->
+    <!-- ***************************** -->
+	<div class="container-1320">
+	    <h2>Companies Management</h2>
+	    <div class="message" id="message"></div>
+	    <div style="display: flex; justify-content: flex-end; margin-bottom: 18px;">
+	        <input type="text" id="productSearch" placeholder="Search Companies..." style="width: 320px; padding: 10px 12px; border: 1px solid #bfc9d9; border-radius: 6px; font-size: 15px;">
+	        <button id="openProductModal" style="margin-left: 12px; padding: 10px 18px; background: linear-gradient(90deg, #007bff 60%, #0056b3 100%); color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: 500; cursor: pointer;" data-modal-target="modal1">Add Company</button>
+	    </div>
+	    <div class="table-responsive">
+	        <table id="productsTable" class="set-company-scroll">
+	            <thead>
+		            <tr>
+		                <th>Name</th>
+		                <th>Street</th>
+		                <th>House Number</th>
+		                <th>Zip Code</th>
+		                <th>Town</th>
+		                <th>Province</th>
+		                <th>Country</th>
+		                <th>Address Type</th>
+		                <th>Phone Number</th>
+		                <th>Email</th>
+		                <th>Vat Number</th>
+		                <th>Website</th>
+		                <th>kvk Number</th>
+		                <th>COC Number</th>
+		                <th>Company Type</th>
+		                <th>Bank Number</th>
+		                <th class="actions">Actions</th>
+		            </tr>
+	            </thead>
+	            <tbody>
+	            	<tr>
+			            <td>Acme Corporation </td>
+			            <td>Main Street</td>
+			            <td>123A</td>
+			            <td>12345</td>
+			            <td>Springfield</td>
+			            <td>Illinois</td>
+			            <td>USA</td>
+			            <td>invoice address</td>
+			            <td>+1-555-1234</td>
+			            <td>contact@website.com</td>
+			            <td>US123456789</td>
+			            <td>https://website.com</td>
+			            <td>987654321</td>
+			            <td>1122334455</td>
+			            <td>LLC</td>
+			            <td>US00ACME123456789</td>
+			            <td class="actions">
+			                <button onclick="viewProduct(32)" data-modal-target="modal2">View</button>
+			                <button onclick="editProduct(32);scrollToForm();"  data-modal-target="modal3">Edit</button>
+			                <button onclick="deleteProduct(32)">Delete</button>
+			            </td>
+	        		</tr>
+	        		<tr>
+			            <td>Acme Corporation </td>
+			            <td>Main Street</td>
+			            <td>123A</td>
+			            <td>12345</td>
+			            <td>Springfield</td>
+			            <td>Illinois</td>
+			            <td>USA</td>
+			            <td>invoice address</td>
+			            <td>+1-555-1234</td>
+			            <td>contact@website.com</td>
+			            <td>US123456789</td>
+			            <td>https://website.com</td>
+			            <td>987654321</td>
+			            <td>1122334455</td>
+			            <td>LLC</td>
+			            <td>US00ACME123456789</td>
+			            <td class="actions">
+			                <button onclick="viewProduct(32)" data-modal-target="modal2">View</button>
+			                <button onclick="editProduct(32);scrollToForm();"  data-modal-target="modal3">Edit</button>
+			                <button onclick="deleteProduct(32)">Delete</button>
+			            </td>
+	        		</tr>
+	        		<tr>
+			            <td>Acme Corporation </td>
+			            <td>Main Street</td>
+			            <td>123A</td>
+			            <td>12345</td>
+			            <td>Springfield</td>
+			            <td>Illinois</td>
+			            <td>USA</td>
+			            <td>invoice address</td>
+			            <td>+1-555-1234</td>
+			            <td>contact@website.com</td>
+			            <td>US123456789</td>
+			            <td>https://website.com</td>
+			            <td>987654321</td>
+			            <td>1122334455</td>
+			            <td>LLC</td>
+			            <td>US00ACME123456789</td>
+			            <td class="actions">
+			                <button onclick="viewProduct(32)" data-modal-target="modal2">View</button>
+			                <button onclick="editProduct(32);scrollToForm();"  data-modal-target="modal3">Edit</button>
+			                <button onclick="deleteProduct(32)">Delete</button>
+			            </td>
+	        		</tr>
+	        		<tr>
+			            <td>Acme Corporation </td>
+			            <td>Main Street</td>
+			            <td>123A</td>
+			            <td>12345</td>
+			            <td>Springfield</td>
+			            <td>Illinois</td>
+			            <td>USA</td>
+			            <td>invoice address</td>
+			            <td>+1-555-1234</td>
+			            <td>contact@website.com</td>
+			            <td>US123456789</td>
+			            <td>https://website.com</td>
+			            <td>987654321</td>
+			            <td>1122334455</td>
+			            <td>LLC</td>
+			            <td>US00ACME123456789</td>
+			            <td class="actions">
+			                <button onclick="viewProduct(32)" data-modal-target="modal2">View</button>
+			                <button onclick="editProduct(32);scrollToForm();"  data-modal-target="modal3">Edit</button>
+			                <button onclick="deleteProduct(32)">Delete</button>
+			            </td>
+	        		</tr>
+	        		<tr>
+			            <td>Acme Corporation </td>
+			            <td>Main Street</td>
+			            <td>123A</td>
+			            <td>12345</td>
+			            <td>Springfield</td>
+			            <td>Illinois</td>
+			            <td>USA</td>
+			            <td>invoice address</td>
+			            <td>+1-555-1234</td>
+			            <td>contact@website.com</td>
+			            <td>US123456789</td>
+			            <td>https://website.com</td>
+			            <td>987654321</td>
+			            <td>1122334455</td>
+			            <td>LLC</td>
+			            <td>US00ACME123456789</td>
+			            <td class="actions">
+			                <button onclick="viewProduct(32)" data-modal-target="modal2">View</button>
+			                <button onclick="editProduct(32);scrollToForm();"  data-modal-target="modal3">Edit</button>
+			                <button onclick="deleteProduct(32)">Delete</button>
+			            </td>
+	        		</tr>
+	        		<tr>
+			            <td>Acme Corporation </td>
+			            <td>Main Street</td>
+			            <td>123A</td>
+			            <td>12345</td>
+			            <td>Springfield</td>
+			            <td>Illinois</td>
+			            <td>USA</td>
+			            <td>invoice address</td>
+			            <td>+1-555-1234</td>
+			            <td>contact@website.com</td>
+			            <td>US123456789</td>
+			            <td>https://website.com</td>
+			            <td>987654321</td>
+			            <td>1122334455</td>
+			            <td>LLC</td>
+			            <td>US00ACME123456789</td>
+			            <td class="actions">
+			                <button onclick="viewProduct(32)" data-modal-target="modal2">View</button>
+			                <button onclick="editProduct(32);scrollToForm();"  data-modal-target="modal3">Edit</button>
+			                <button onclick="deleteProduct(32)">Delete</button>
+			            </td>
+	        		</tr>
+	        	</tbody>
+	        </table>
+	    </div>
+	</div>
+
+	<!-- MODAL 1 ADD COMAPNY DETAILS -->
+	<div class="modal-backdrop" id="modal1" onclick="closeOnBackdrop(event)">
+		
+	    <div class="modal" onclick="event.stopPropagation()">
+	    	<form id="categoryForm">
+		      	<div class="modal-header">
+		        	<h5 class="modal-title">Add Company Details</h5>
+		        	<button class="modal-close" data-close>&times;</button>
+		      	</div>
+		      	<div class="modal-body">
+			        <div class="form-group">
+				        <label>Company Name</label>
+				        <input type="text" id="companyName" placeholder="Company Name...">
+				    </div>
+				    <div class="form-group">
+				        <label>Street</label>
+				        <input type="text" id="street" placeholder="Main Street...">
+				    </div>
+				    <div class="form-group">
+				        <label>House Number</label>
+				        <input type="text" id="houseNumber" placeholder="123A...">
+				    </div>
+				    <div class="form-group">
+				        <label>Zip Code</label>
+				        <input type="text" id="zipCode" placeholder="12345...">
+				    </div>
+				    <div class="form-group">
+				        <label>Town</label>
+				        <input type="text" id="town" placeholder="Springfield...">
+				    </div>
+				    <div class="form-group">
+				        <label>Province</label>
+				        <input type="text" id="province" placeholder="Illinois...">
+				    </div>
+				    <div class="form-group">
+				        <label>Country</label>
+				        <input type="text" id="country" placeholder="USA...">
+				    </div>
+				    <div class="form-group">
+				        <label>Address Type</label>
+				        <select id="addressType">
+				        	<option value="" selected>-- Address Type --</option>
+				            <option value="invoice address">Invoice Address</option>
+				            <option value="shipping address">Shipping Address</option>
+				            <option value="office address">Office Address</option>
+				        </select>
+				    </div>
+				    <div class="form-group">
+				        <label>Phone Number</label>
+				        <input type="text" id="phoneNumber" placeholder="+1-555...">
+				    </div>
+				    <div class="form-group">
+				        <label>Email</label>
+				        <input type="email" id="email" placeholder="contact@...">
+				    </div>
+				    <div class="form-group">
+				        <label>VAT Number</label>
+				        <input type="text" id="vatNumber" placeholder="US123...">
+				    </div>
+				    <div class="form-group">
+				        <label>Website</label>
+				        <input type="url" id="website" placeholder="website.com...">
+				    </div>
+				    <div class="form-group">
+				        <label>KVK Number</label>
+				        <input type="text" id="kvkNumber" placeholder="9876...">
+				    </div>
+				    <div class="form-group">
+				        <label>COC Number</label>
+				        <input type="text" id="cocNumber" placeholder="1122...">
+				    </div>
+				    <div class="form-group">
+				        <label>Company Type</label>
+				        <select id="companyType">
+				            <option value="" selected>-- Select Type --</option>
+				            <option value="LLC" >LLC</option>
+				            <option value="Corporation">Corporation</option>
+				            <option value="Partnership">Partnership</option>
+				            <option value="Sole Proprietor">Sole Proprietor</option>
+				        </select>
+				    </div>
+				    <div class="form-group">
+				        <label>Bank Number</label>
+				        <input type="text" id="bankNumber" placeholder="US00ACME123...">
+				    </div>
+			   
+		      </div>
+		      <div class="modal-footer">
+		        <button class="btn btn-secondary" data-close>Close</button>
+		        <button class="btn btn-primary">Save</button>
+		      </div>
+	      	</form>
+	    </div>
+	
+	</div>
+
+	<!-- Modal 2 VIEW -->
+	<div class="modal-backdrop" id="modal2" onclick="closeOnBackdrop(event)">
+	    <div class="modal" onclick="event.stopPropagation()">
+	      <div class="modal-header">
+	        <h5 class="modal-title">View Company Details</h5>
+	        <button class="modal-close" data-close>&times;</button>
+	      </div>
+	      <div class="modal-body">
+	        <table style="width: 100%; border-collapse: collapse;">
+			    <tbody>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Company Name</td>
+			        <td style="background: #f5f8fa; padding: 8px;">Acme Corporation 3</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Street</td>
+			        <td style="background: #f5f8fa; padding: 8px;">Main Street</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">House Number</td>
+			        <td style="background: #f5f8fa; padding: 8px;">123A</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Zip Code</td>
+			        <td style="background: #f5f8fa; padding: 8px;">12345</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Town</td>
+			        <td style="background: #f5f8fa; padding: 8px;">Springfield</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Province</td>
+			        <td style="background: #f5f8fa; padding: 8px;">Illinois</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Country</td>
+			        <td style="background: #f5f8fa; padding: 8px;">USA</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Address Type</td>
+			        <td style="background: #f5f8fa; padding: 8px;">Invoice Address</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Phone Number</td>
+			        <td style="background: #f5f8fa; padding: 8px;">+1-555-1234</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Email</td>
+			        <td style="background: #f5f8fa; padding: 8px;">contact@website.com</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">VAT Number</td>
+			        <td style="background: #f5f8fa; padding: 8px;">US123456789</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Website</td>
+			        <td style="background: #f5f8fa; padding: 8px;">https://website.com</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">KVK Number</td>
+			        <td style="background: #f5f8fa; padding: 8px;">987654321</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">COC Number</td>
+			        <td style="background: #f5f8fa; padding: 8px;">1122334455</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Company Type</td>
+			        <td style="background: #f5f8fa; padding: 8px;">LLC</td>
+			      </tr>
+			      <tr>
+			        <td style="font-weight: bold; padding: 8px;">Bank Number</td>
+			        <td style="background: #f5f8fa; padding: 8px;">US00ACME123456789</td>
+			      </tr>
+			    </tbody>
+			  </table>
+	      </div>
+	      <div class="modal-footer">
+	        <button class="btn btn-secondary" data-close>Close</button>
+	        <button class="btn btn-primary">Confirm</button>
+	      </div>
+	    </div>
+	</div>
+	<!-- Modal 3 EDIT -->
+	<div class="modal-backdrop" id="modal3" onclick="closeOnBackdrop(event)">
+	    <div class="modal" onclick="event.stopPropagation()">
+	    	<form id="categoryForm">
+		      	<div class="modal-header">
+		        	<h5 class="modal-title">Edit Company Details</h5>
+		        	<button class="modal-close" data-close>&times;</button>
+		      	</div>
+		      	<div class="modal-body">
+				        <div class="form-group">
+					        <label>Company Name</label>
+					        <input type="text" id="companyName" value="Acme Corporation 3">
+					    </div>
+					    <div class="form-group">
+					        <label>Street</label>
+					        <input type="text" id="street" value="Main Street">
+					    </div>
+					    <div class="form-group">
+					        <label>House Number</label>
+					        <input type="text" id="houseNumber" value="123A">
+					    </div>
+					    <div class="form-group">
+					        <label>Zip Code</label>
+					        <input type="text" id="zipCode" value="12345">
+					    </div>
+					    <div class="form-group">
+					        <label>Town</label>
+					        <input type="text" id="town" value="Springfield">
+					    </div>
+					    <div class="form-group">
+					        <label>Province</label>
+					        <input type="text" id="province" value="Illinois">
+					    </div>
+					    <div class="form-group">
+					        <label>Country</label>
+					        <input type="text" id="country" value="USA">
+					    </div>
+					    <div class="form-group">
+					        <label>Address Type</label>
+					        <select id="addressType">
+					            <option value="invoice address" selected>Invoice Address</option>
+					            <option value="shipping address">Shipping Address</option>
+					            <option value="office address">Office Address</option>
+					        </select>
+					    </div>
+					    <div class="form-group">
+					        <label>Phone Number</label>
+					        <input type="text" id="phoneNumber" value="+1-555-1234">
+					    </div>
+					    <div class="form-group">
+					        <label>Email</label>
+					        <input type="email" id="email" value="contact@website.com">
+					    </div>
+					    <div class="form-group">
+					        <label>VAT Number</label>
+					        <input type="text" id="vatNumber" value="US123456789">
+					    </div>
+					    <div class="form-group">
+					        <label>Website</label>
+					        <input type="url" id="website" value="https://website.com">
+					    </div>
+					    <div class="form-group">
+					        <label>KVK Number</label>
+					        <input type="text" id="kvkNumber" value="987654321">
+					    </div>
+					    <div class="form-group">
+					        <label>COC Number</label>
+					        <input type="text" id="cocNumber" value="1122334455">
+					    </div>
+					    <div class="form-group">
+					        <label>Company Type</label>
+					        <select id="companyType">
+					            <option value="">-- Select Type --</option>
+					            <option value="LLC" selected>LLC</option>
+					            <option value="Corporation">Corporation</option>
+					            <option value="Partnership">Partnership</option>
+					            <option value="Sole Proprietor">Sole Proprietor</option>
+					        </select>
+					    </div>
+					    <div class="form-group">
+					        <label>Bank Number</label>
+					        <input type="text" id="bankNumber" value="US00ACME123456789">
+					    </div>
+				   
+		      	</div>
+		      	<div class="modal-footer">
+		        	<button class="btn btn-secondary" data-close>Close</button>
+		        	<button class="btn btn-primary">Save</button>
+		      	</div>
+	      	</form>
+	    </div>
+	</div>
+
+	<script>
+	    // Open modal
+	    document.querySelectorAll("[data-modal-target]").forEach(button => {
+	      button.addEventListener("click", () => {
+	        const targetId = button.getAttribute("data-modal-target");
+	        const modal = document.getElementById(targetId);
+	        if (modal) modal.classList.add("show");
+	      });
+	    });
+
+	    // Close modal (button click)
+	    document.querySelectorAll("[data-close]").forEach(button => {
+	      button.addEventListener("click", () => {
+	        const modal = button.closest(".modal-backdrop");
+	        if (modal) modal.classList.remove("show");
+	      });
+	    });
+
+	    // Close on backdrop click
+	    function closeOnBackdrop(event) {
+	      event.currentTarget.classList.remove("show");
+	    }
+
+	    // ESC key support
+	    document.addEventListener("keydown", (e) => {
+	      if (e.key === "Escape") {
+	        document.querySelectorAll(".modal-backdrop.show").forEach(modal => {
+	          modal.classList.remove("show");
+	        });
+	      }
+	    });
+	</script>
+</body>
+</html>

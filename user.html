@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>User</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+		    font-family: "Jost", sans-serif;
+		    background: linear-gradient(120deg, #f0f4f9 0%, #d9e7fa 100%);
+		    min-height: 100vh;
+		    margin: 0;
+		}
+		.container {
+		    max-width: 600px;
+		    margin: 40px auto;
+		    background: #fff;
+		    padding: 40px 32px 32px 32px;
+		    border-radius: 16px;
+		    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+		}
+		.container-1320 {
+			max-width: 1320px;
+			margin: 40px auto;
+		    background: #fff;
+		    padding: 40px 32px 32px 32px;
+		    border-radius: 16px;
+		    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+		}
+		h2 {
+		    text-align: center;
+		    margin-bottom: 24px;
+		    color: #2a3b4c;
+		}
+		label {
+		    display: block;
+		    margin-bottom: 8px;
+		    font-weight: bold;
+		}
+		input[type="text"], select, input[type="password"] {
+		    width: 100%;
+		    padding: 10px;
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    font-family: "Jost", sans-serif;
+		}
+		.form-group {
+		    margin-bottom: 16px;
+		}
+		ul {
+		    list-style: none;
+		    padding-left: 0;
+		}
+		li {
+		    margin-bottom: 10px;
+		    background: #f7fafd;
+		    border-radius: 8px;
+		    padding: 10px 16px;
+		    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+		}
+		button {
+		    background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
+		    color: white;
+		    border: none;
+		    padding: 10px 16px;
+		    border-radius: 4px;
+		    cursor: pointer;
+		    margin-right: 8px;
+		    font-family: "Jost", sans-serif;
+		}
+		.table-responsive {
+		    overflow-x: auto;
+		    overflow-y: auto;
+		    max-height: 500px;
+		    border-radius: 12px;
+		    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+		}
+		table {
+		    width: 100%;
+		    min-width: unset;
+		    table-layout: auto;
+		    border-radius: 0;
+		    box-shadow: none;
+		}
+		th {
+		    background: linear-gradient(90deg, #eaf1fb 60%, #d9e7fa 100%);
+		    color: #2a3b4c;
+		    font-weight: 700;
+		    font-size: 16px;
+		}
+		th, td {
+		    border: none;
+		    padding: 12px 8px;
+		    text-align: left;
+		    font-size: 14px;
+		    word-break: break-word;
+		}
+		.actions {
+			text-align: right;
+		}
+		.set-account-active {
+			display: inline-block;
+			padding: 2px 14px;
+			background-color: #c6e5c6;
+			border-radius: 5px;
+			min-width: 75px;
+			border: 1px solid  #5abf5a;
+			font-size: 13px;
+			text-align: center;
+		}
+		.set-account-inactive {
+			display: inline-block;
+			padding: 2px 14px;
+			background-color: #f1cbcb;
+			border-radius: 5px;
+			border: 1px solid #e18888;
+			min-width: 72px;
+			font-size: 13px;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<!-- ***************************** -->
+    <!-- INNER CONTAINER -->
+    <!-- ***************************** -->
+	<nav style="display:flex;justify-content:space-between;align-items:center;padding:18px 32px;background:linear-gradient(90deg,#eaf1fb 60%,#d9e7fa 100%);border-radius:0 0 16px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:24px;">
+	    <div>
+	        <img src="img/image1_edited.avif" alt="Logo" style="height:40px;vertical-align:middle;border-radius:8px;">
+	    </div>
+	    <div>
+	        <a href="products.html" style="margin-right:18px;text-decoration:none;color:#0078d4;font-weight:500;">All Products</a>
+	        <a href="category-view.html" style="margin-right:18px;text-decoration:none;color:#0078d4;font-weight:500;">Categories</a>
+	        <a href="login.html" id="logoutLink" style="text-decoration:none;color:#d40000;font-weight:500;">Logout</a>
+	    </div>
+    </nav>
+    <!-- ***************************** -->
+    <!-- INNER CONTAINER -->
+    <!-- ***************************** -->
+    <div class="container" id="mainContent">
+	    <h2>Add User</h2>
+	    <div class="message" id="message"></div>
+	    <form id="categoryForm">
+	        <input type="hidden" id="categoryId">
+	        <div class="form-group">
+	            <label>Username</label>
+	            <input type="text" id="Username" required="">
+	        </div>
+	        <div class="form-group">
+	            <label>Password</label>
+	            <input type="password" id="password" required="">
+	        </div>
+	        <div class="form-group">
+	            <label>Role</label>
+	            <select id="parentId">
+		            <option value="">-- None --</option>
+		            <option value="user">User</option>
+		            <option value="employee">Employee</option>
+		            <option value="admin">Admin</option>
+		        </select>
+	        </div>
+	        <div class="form-group">
+	            <label>
+	                <input type="checkbox" id="activeField" checked=""> Active
+	            </label>
+	        </div>
+	        <button type="submit">Save User</button>
+	        <button type="button" id="cancelEdit" style="">Cancel</button>
+	    </form>
+	</div>
+
+
+	<div class="container-1320">
+    <h2>Users Management</h2>
+    <div class="message" id="message"></div>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 18px;">
+        <input type="text" id="productSearch" placeholder="Search User..." style="width: 320px; padding: 10px 12px; border: 1px solid #bfc9d9; border-radius: 6px; font-size: 15px;">
+        <button id="openProductModal" style="margin-left: 12px; padding: 10px 18px; background: linear-gradient(90deg, #007bff 60%, #0056b3 100%); color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: 500; cursor: pointer;">Search</button>
+    </div>
+    <div class="table-responsive">
+        <table id="productsTable" >
+            <thead>
+	            <tr>
+	                <th>Username</th>
+	                <th>Role</th>
+	                <th>Account</th>
+	                <th class="actions">Actions</th>
+	            </tr>
+            </thead>
+            <tbody>
+            	<tr>
+		            <td>Jhon</td>
+		            <td>Admin</td>
+		            <td><span class="set-account-active">Active</span></td>
+		            <td class="actions">
+		                <button onclick="viewProduct(32)">View</button>
+		                <button onclick="editProduct(32);scrollToForm();">Edit</button>
+		                <button onclick="deleteProduct(32)">Delete</button>
+		            </td>
+        		</tr>
+        		<tr>
+		            <td>Ben</td>
+		            <td>User</td>
+		            <td><span class="set-account-inactive">Inactive</span></td>
+		            <td class="actions">
+		                <button onclick="viewProduct(32)">View</button>
+		                <button onclick="editProduct(32);scrollToForm();">Edit</button>
+		                <button onclick="deleteProduct(32)">Delete</button>
+		            </td>
+        		</tr>
+        		<tr>
+		            <td>Smith</td>
+		            <td>Employee</td>
+		            <td><span class="set-account-active">Active</span></td>
+		            <td class="actions">
+		                <button onclick="viewProduct(32)">View</button>
+		                <button onclick="editProduct(32);scrollToForm();">Edit</button>
+		                <button onclick="deleteProduct(32)">Delete</button>
+		            </td>
+        		</tr>
+        	</tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
